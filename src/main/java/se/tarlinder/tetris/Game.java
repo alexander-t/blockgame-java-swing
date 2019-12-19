@@ -3,15 +3,16 @@ package se.tarlinder.tetris;
 import javax.swing.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.Arrays;
 
 public class Game extends JFrame {
     private Canvas canvas;
-    public int[][] board = new int[10][7];
-    public int bx; // Block X
-    public int by; // Block Y
+    int[][] board;
     private boolean lost = false;
+    private Block block;
 
-    public Game() {
+    public Game(int width, int height) {
+        board = new int[height + 1][width + 2]; // Add sides and a bottom row that block
         for (int y = 0; y < board.length; y++) {
             for (int x = 0; x < board[0].length; x++) {
                 if (y < board.length - 1) {
@@ -44,57 +45,61 @@ public class Game extends JFrame {
     }
 
     public void addBlock() {
-        bx = getCenterX();
-        by = 0;
-        if (board[by][bx] != 0) {
-            lost = true;
-        } else {
-            board[by][bx] = 1;
+        block = new Block(getCenterX(), 0, board);
+        lost = !block.canDrop();
+    }
+
+    private void checkFullRow() {
+        int y = board.length - 2;
+        do {
+            boolean rowFull = true;
+            for (int x = 1; x < board[0].length - 1; x++) {
+                if (board[y][x] == 0) {
+                    rowFull = false;
+                    break;
+                }
+            }
+
+            if (rowFull) {
+                collapse(y);
+                board[0][0] = board[0][board[0].length - 1] = 2; // Reset edges
+            } else {
+                y--;
+            }
+        } while (y > 0);
+    }
+
+    public void collapse(int row) {
+        for (int y = Math.max(row - 1, 0); y >= 0; y--) {
+            System.arraycopy(board[y], 0, board[y + 1], 0, board[0].length);
         }
+        Arrays.fill(board[0], 0);
+    }
+
+    public void tick() {
+        if (block.canDrop()) {
+            block.drop();
+        } else {
+            checkFullRow();
+            addBlock();
+        }
+        canvas.repaint();
     }
 
     public void moveBlockLEft() {
-        if (board[by][bx - 1] == 0) {
-            board[by][bx--] = 0;
-            board[by][bx] = 1;
+        if (block.canMoveLeft()) {
+            block.moveLeft();
         }
         canvas.repaint();
     }
 
     public void moveBlockRight() {
-        if (board[by][bx + 1] == 0) {
-            board[by][bx++] = 0;
-            board[by][bx] = 1;
+        if (block.canMoveRight()) {
+            block.moveRight();
         }
         canvas.repaint();
     }
 
-    private void checkFullRow() {
-        int y = board.length - 2;
-        boolean rowFull = true;
-        for (int x = 1; x < board[0].length - 1; x++) {
-            if (board[y][x] == 0) {
-                rowFull = false;
-            }
-        }
-
-        if (rowFull) {
-            for (y = board.length - 3; y > 0; y--) {
-                System.arraycopy(board[y], 0, board[y + 1], 0, board[0].length);
-            }
-        }
-    }
-
-    public void tick() {
-        checkFullRow();
-        if (board[by + 1][bx] == 0) {
-            board[by++][bx] = 0;
-            board[by][bx] = 1;
-        } else {
-            addBlock();
-        }
-        canvas.repaint();
-    }
 
     public String toString() {
         String b = "";
@@ -119,14 +124,15 @@ public class Game extends JFrame {
     }
 
     public static void main(String[] args) {
-        Game g = new Game();
+        Game g = new Game(10, 24);
         g.addBlock();
         new Thread(() -> {
             try {
-                while(!g.lost) {
+                while (!g.lost) {
                     g.tick();
                     Thread.sleep(250);
                 }
+                System.exit(0);
             } catch (InterruptedException e) {
 
             }
@@ -134,6 +140,6 @@ public class Game extends JFrame {
     }
 
     private int getCenterX() {
-        return board[0].length / 2;
+        return board[0].length / 2 - 1;
     }
 }

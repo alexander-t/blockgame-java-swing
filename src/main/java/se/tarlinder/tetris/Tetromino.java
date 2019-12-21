@@ -2,6 +2,7 @@ package se.tarlinder.tetris;
 
 public abstract class Tetromino {
     public abstract int[][] matrix();
+    public abstract int getId();
 
     public int getWidth() {
         return matrix()[0].length;

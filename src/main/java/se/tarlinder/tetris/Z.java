@@ -15,6 +15,11 @@ public class Z extends Tetromino {
         return shape.get(rotationIndex);
     }
 
+    @Override
+    public int getId() {
+        return 11;
+    }
+
     public void rotate() {
         rotationIndex = ++rotationIndex % shape.size();
     }

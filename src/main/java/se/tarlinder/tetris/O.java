@@ -8,4 +8,9 @@ public class O extends Tetromino {
     public int[][] matrix() {
         return matrix;
     }
+
+    @Override
+    public int getId() {
+        return 10;
+    }
 }

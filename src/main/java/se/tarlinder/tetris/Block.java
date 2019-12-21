@@ -22,7 +22,7 @@ public class Block {
         tetromino = nextBlockIndex == 0 ? O : Z;
         nextBlockIndex = ++nextBlockIndex % 2;
 
-        place(x, y, 1);
+        place(x, y, tetromino.getId());
     }
 
     private void place(int boardX, int boardY, int value) {
@@ -70,33 +70,33 @@ public class Block {
         for (int squareY = 0; squareY < futureRotatedShape.length; squareY++) {
             for (int squareX = 0; squareX < futureRotatedShape[0].length; squareX++) {
                 if (futureRotatedShape[squareY][squareX] == 1 && board[y + squareY][x + squareX] > 0) {
-                    place(x, y, 1);
+                    place(x, y, tetromino.getId());
                     return false;
                 }
             }
         }
-        place(x, y, 1);
+        place(x, y, tetromino.getId());
         return true;
     }
 
     public void drop() {
         place(x, y++, 0);
-        place(x, y, 1);
+        place(x, y, tetromino.getId());
     }
 
     public void moveRight() {
         place(x++, y, 0);
-        place(x, y, 1);
+        place(x, y, tetromino.getId());
     }
 
     public void moveLeft() {
         place(x--, y, 0);
-        place(x, y, 1);
+        place(x, y, tetromino.getId());
     }
 
     public void rotate() {
         place(x, y, 0);
         tetromino.rotate();
-        place(x, y, 1);
+        place(x, y, tetromino.getId());
     }
 }

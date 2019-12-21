@@ -18,23 +18,26 @@ public class Canvas extends JPanel {
 
     @Override
     protected void paintComponent(Graphics g) {
-    /*    for (int x = 0; x < columns; x++) {
-            g.drawLine(x * squareSize, 0, x * squareSize, rows * squareSize);
-        }
-
-        for (int y = 0; y < rows; y++) {
-            g.drawLine(0, y * squareSize, columns * squareSize, y * squareSize);
-        }*/
         for (int y = 0; y < rows; y++) {
             for (int x = 0; x < columns; x++) {
+                boolean drawingBlock = false;
                 if (board[y][x] == 2) {
                     g.setColor(Color.black);
-                } else if (board[y][x] == 1) {
-                    g.setColor(Color.blue);
+                } else if (board[y][x] == 10) {
+                    g.setColor(Color.yellow);
+                    drawingBlock = true;
+                } else if (board[y][x] == 11) {
+                    g.setColor(Color.red);
+                    drawingBlock = true;
                 } else {
                     g.setColor(Color.white);
                 }
-                g.fillRect(x * squareSize, y * squareSize, (x + 1) * squareSize, (y + 1) * squareSize);
+                g.fillRect(x * squareSize, y * squareSize, squareSize, squareSize);
+
+                if (drawingBlock) {
+                    g.setColor(Color.white);
+                    g.drawRect(x * squareSize, y * squareSize, squareSize - 1, squareSize - 1);
+                }
             }
         }
     }

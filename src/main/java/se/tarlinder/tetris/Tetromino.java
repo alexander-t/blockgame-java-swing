@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public abstract class Tetromino {
+public class Tetromino {
 
     private final int id;
     protected final List<int[][]> shape = new ArrayList<>();

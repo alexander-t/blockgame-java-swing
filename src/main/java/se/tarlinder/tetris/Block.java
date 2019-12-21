@@ -3,7 +3,23 @@ package se.tarlinder.tetris;
 // A block's x and y are counted from the top left corner.
 public class Block {
 
-    private static final Tetromino[] tetrominos = new Tetromino[]{new O(), new Z(), new S()};
+    private static final Tetromino O = new Tetromino(10,
+            new int[][]{{1, 1}, {1, 1}});
+    private static final Tetromino Z = new Tetromino(11,
+            new int[][]{{1, 1, 0}, {0, 1, 1}},
+            new int[][]{{0, 1}, {1, 1}, {1, 0}});
+    private static final Tetromino S = new Tetromino(12,
+            new int[][]{{0, 1, 1}, {1, 1, 0}},
+            new int[][]{{1, 0}, {1, 1}, {0, 1}});
+    private static final Tetromino J = new Tetromino(13,
+            new int[][]{{1, 1, 1}, {0, 0, 1}},
+            new int[][]{{0, 1}, {0, 1}, {1, 1}},
+            new int[][]{{1, 0, 0}, {1, 1, 1}},
+            new int[][]{{1, 1}, {1, 0}, {1, 0}}
+    );
+
+
+    private static final Tetromino[] tetrominos = new Tetromino[]{O, Z, S, J};
     private static int nextTetrominoIndex = 0;
 
     private Tetromino tetromino;
@@ -23,7 +39,7 @@ public class Block {
     }
 
     private void place(int boardX, int boardY, int value) {
-         for (int y = 0; y < tetromino.getHeight(); y++) {
+        for (int y = 0; y < tetromino.getHeight(); y++) {
             for (int x = 0; x < tetromino.getWidth(); x++) {
                 if (tetromino.matrix()[y][x] > 0) {
                     board[boardY + y][boardX + x] = value;

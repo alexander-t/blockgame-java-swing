@@ -1,9 +1,18 @@
 package se.tarlinder.tetris;
 
+import java.util.Arrays;
+import java.util.List;
+
 // A block's x and y are counted from the top left corner.
 public class Block {
-//    private static final int[][] shape = new int[][]{{1, 1}, {1, 1}};
-    private static final int[][] shape = new int[][]{{1, 1, 0}, {0, 1, 1}};
+    //private static final int[][] shape = new int[][]{{1, 1}, {1, 1}};
+    private static final List<int[][]> Z = Arrays.asList(
+            new int[][]{{1, 1, 0}, {0, 1, 1}},
+            new int[][]{{0, 1}, {1, 1}, {1, 0}});
+
+    private int shapeIndex = 0;
+    private int[][] shape = Z.get(shapeIndex);
+
     private int x, y;
     private int width, height;
 
@@ -21,7 +30,7 @@ public class Block {
     }
 
     private void place(int boardX, int boardY, int value) {
-        for (int y = 0; y < height; y++) {
+         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
                 if (shape[y][x] > 0) {
                     board[boardY + y][boardX + x] = value;
@@ -57,6 +66,21 @@ public class Block {
         return true;
     }
 
+    public boolean canRotate() {
+        int futureShapeIndex = (shapeIndex + 1) % Z.size();
+        int[][] futureShape = Z.get(futureShapeIndex);
+        place(x, y, 0);
+        for (int squareY = 0; squareY < futureShape.length; squareY++) {
+            for (int squareX = 0; squareX < futureShape[0].length; squareX++) {
+                if (futureShape[squareY][squareX] == 1 && board[y + squareY][x + squareX] > 0) {
+                    place(x, y, 1);
+                    return false;
+                }
+            }
+        }
+        place(x, y, 1);
+        return true;
+    }
 
     public void drop() {
         place(x, y++, 0);
@@ -70,6 +94,15 @@ public class Block {
 
     public void moveLeft() {
         place(x--, y, 0);
+        place(x, y, 1);
+    }
+
+    public void rotate() {
+        place(x, y, 0);
+        shapeIndex = (shapeIndex + 1) % Z.size();
+        shape = Z.get(shapeIndex);
+        height = shape.length;
+        width = shape[0].length;
         place(x, y, 1);
     }
 }

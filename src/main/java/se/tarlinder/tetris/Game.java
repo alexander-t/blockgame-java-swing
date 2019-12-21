@@ -33,7 +33,9 @@ public class Game extends JFrame {
                 } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
                     moveBlockRight();
                 } else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-                    moveBlockLEft();
+                    moveBlockLeft();
+                } else if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+                    rotateBlock();
                 }
             }
         });
@@ -86,18 +88,25 @@ public class Game extends JFrame {
         canvas.repaint();
     }
 
-    public void moveBlockLEft() {
+    public void moveBlockLeft() {
         if (block.canMoveLeft()) {
             block.moveLeft();
+            canvas.repaint();
         }
-        canvas.repaint();
     }
 
     public void moveBlockRight() {
         if (block.canMoveRight()) {
             block.moveRight();
+            canvas.repaint();
         }
-        canvas.repaint();
+    }
+
+    private void rotateBlock() {
+        if (block.canRotate()) {
+            block.rotate();
+            canvas.repaint();
+        }
     }
 
 

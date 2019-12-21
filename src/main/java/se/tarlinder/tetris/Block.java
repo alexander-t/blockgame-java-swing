@@ -1,31 +1,16 @@
 package se.tarlinder.tetris;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 // A block's x and y are counted from the top left corner.
 public class Block {
 
-    // Base shapes
-    private static final List<int[][]> Z = Arrays.asList(
-            new int[][]{{1, 1, 0}, {0, 1, 1}},
-            new int[][]{{0, 1}, {1, 1}, {1, 0}});
-
-    private static final List<int[][]> O = new ArrayList<>();
-    static {
-        // Special case for O's one-element list
-        O.add(new int[][]{{1, 1}, {1, 1}});
-    }
+    private static final Tetromino Z = new Z();
+    private static final Tetromino O = new O();
 
     private static int nextBlockIndex = 0;
 
-    private List<int[][]> baseShape;
-    private int shapeRotationIndex = 0;
-    private int[][] rotatedShape;
+    private Tetromino tetromino;
 
     private int x, y;
-    private int width, height;
 
     private int[][] board;
 
@@ -34,19 +19,16 @@ public class Block {
         this.y = y;
         this.board = board;
 
-        baseShape = nextBlockIndex == 0 ? O : Z;
-        rotatedShape = baseShape.get(0);
-        height = rotatedShape.length;
-        width = rotatedShape[0].length;
+        tetromino = nextBlockIndex == 0 ? O : Z;
+        nextBlockIndex = ++nextBlockIndex % 2;
 
         place(x, y, 1);
-        nextBlockIndex = ++nextBlockIndex % 2;
     }
 
     private void place(int boardX, int boardY, int value) {
-         for (int y = 0; y < height; y++) {
-            for (int x = 0; x < width; x++) {
-                if (rotatedShape[y][x] > 0) {
+         for (int y = 0; y < tetromino.getHeight(); y++) {
+            for (int x = 0; x < tetromino.getWidth(); x++) {
+                if (tetromino.matrix()[y][x] > 0) {
                     board[boardY + y][boardX + x] = value;
                 }
             }
@@ -54,8 +36,9 @@ public class Block {
     }
 
     public boolean canDrop() {
-        for (int squareX = 0; squareX < width; squareX++) {
-            if (rotatedShape[height - 1][squareX] == 1 && board[y + height][x + squareX] > 0) {
+        for (int squareX = 0; squareX < tetromino.getWidth(); squareX++) {
+            if (tetromino.matrix()[tetromino.getHeight() - 1][squareX] == 1
+                    && board[y + tetromino.getHeight()][x + squareX] > 0) {
                 return false;
             }
         }
@@ -63,8 +46,9 @@ public class Block {
     }
 
     public boolean canMoveRight() {
-        for (int squareY = 0; squareY < height; squareY++) {
-            if (rotatedShape[squareY][width - 1] == 1 && board[y + squareY][x + width] > 0) {
+        for (int squareY = 0; squareY < tetromino.getHeight(); squareY++) {
+            if (tetromino.matrix()[squareY][tetromino.getWidth() - 1] == 1
+                    && board[y + squareY][x + tetromino.getWidth()] > 0) {
                 return false;
             }
         }
@@ -72,8 +56,8 @@ public class Block {
     }
 
     public boolean canMoveLeft() {
-        for (int squareY = 0; squareY < height; squareY++) {
-            if (rotatedShape[squareY][0] == 1 && board[y + squareY][x - 1] > 0) {
+        for (int squareY = 0; squareY < tetromino.getHeight(); squareY++) {
+            if (tetromino.matrix()[squareY][0] == 1 && board[y + squareY][x - 1] > 0) {
                 return false;
             }
         }
@@ -81,8 +65,7 @@ public class Block {
     }
 
     public boolean canRotate() {
-        int futureShapeRotationIndex = (shapeRotationIndex + 1) % baseShape.size();
-        int[][] futureRotatedShape = Z.get(futureShapeRotationIndex);
+        int[][] futureRotatedShape = tetromino.rotatedMatrix();
         place(x, y, 0);
         for (int squareY = 0; squareY < futureRotatedShape.length; squareY++) {
             for (int squareX = 0; squareX < futureRotatedShape[0].length; squareX++) {
@@ -113,10 +96,7 @@ public class Block {
 
     public void rotate() {
         place(x, y, 0);
-        shapeRotationIndex = (shapeRotationIndex + 1) % baseShape.size();
-        rotatedShape = baseShape.get(shapeRotationIndex);
-        height = rotatedShape.length;
-        width = rotatedShape[0].length;
+        tetromino.rotate();
         place(x, y, 1);
     }
 }

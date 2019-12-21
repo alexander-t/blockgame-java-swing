@@ -35,41 +35,27 @@ public class Block {
         }
     }
 
-    public boolean canDrop() {
-        for (int squareX = 0; squareX < tetromino.getWidth(); squareX++) {
-            if (tetromino.matrix()[tetromino.getHeight() - 1][squareX] == 1
-                    && board[y + tetromino.getHeight()][x + squareX] > 0) {
-                return false;
-            }
-        }
-        return true;
-    }
-
     public boolean canMoveRight() {
-        for (int squareY = 0; squareY < tetromino.getHeight(); squareY++) {
-            if (tetromino.matrix()[squareY][tetromino.getWidth() - 1] == 1
-                    && board[y + squareY][x + tetromino.getWidth()] > 0) {
-                return false;
-            }
-        }
-        return true;
+        return intersect(tetromino.matrix(), x + 1, y);
     }
 
     public boolean canMoveLeft() {
-        for (int squareY = 0; squareY < tetromino.getHeight(); squareY++) {
-            if (tetromino.matrix()[squareY][0] == 1 && board[y + squareY][x - 1] > 0) {
-                return false;
-            }
-        }
-        return true;
+        return intersect(tetromino.matrix(), x - 1, y);
+    }
+
+    public boolean canDrop() {
+        return intersect(tetromino.matrix(), x, y + 1);
     }
 
     public boolean canRotate() {
-        int[][] futureRotatedShape = tetromino.rotatedMatrix();
+        return intersect(tetromino.rotatedMatrix(), x, y);
+    }
+
+    private boolean intersect(int[][] matrix, int futureX, int futureY) {
         place(x, y, 0);
-        for (int squareY = 0; squareY < futureRotatedShape.length; squareY++) {
-            for (int squareX = 0; squareX < futureRotatedShape[0].length; squareX++) {
-                if (futureRotatedShape[squareY][squareX] == 1 && board[y + squareY][x + squareX] > 0) {
+        for (int squareY = 0; squareY < matrix.length; squareY++) {
+            for (int squareX = 0; squareX < matrix[0].length; squareX++) {
+                if (matrix[squareY][squareX] == 1 && board[futureY + squareY][futureX + squareX] > 0) {
                     place(x, y, tetromino.getId());
                     return false;
                 }

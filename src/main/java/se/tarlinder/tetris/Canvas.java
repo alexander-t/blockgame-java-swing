@@ -35,6 +35,9 @@ public class Canvas extends JPanel {
                 } else if (board[y][x] == 13) {
                     g.setColor(Color.blue);
                     drawingBlock = true;
+                } else if (board[y][x] == 14) {
+                    g.setColor(Color.orange);
+                    drawingBlock = true;
                 } else {
                     g.setColor(Color.white);
                 }

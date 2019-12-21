@@ -1,5 +1,7 @@
 package se.tarlinder.tetris;
 
+import java.util.Random;
+
 // A block's x and y are counted from the top left corner.
 public class Block {
 
@@ -17,15 +19,23 @@ public class Block {
             new int[][]{{1, 0, 0}, {1, 1, 1}},
             new int[][]{{1, 1}, {1, 0}, {1, 0}}
     );
+    private static final Tetromino L = new Tetromino(14,
+            new int[][]{{1, 1, 1}, {1, 0, 0}},
+            new int[][]{{1, 1}, {0, 1}, {0, 1}},
+            new int[][]{{0, 0, 1}, {1, 1, 1}},
+            new int[][]{{1, 0}, {1, 0}, {1, 1}}
+    );
 
-
-    private static final Tetromino[] tetrominos = new Tetromino[]{O, Z, S, J};
-    private static int nextTetrominoIndex = 0;
+    private static final Tetromino[] tetrominos = new Tetromino[]{O, Z, S, J, L};
+    private static Random random = new Random();
+    private static int nextTetrominoIndex = random.nextInt(tetrominos.length);
+    ;
 
     private Tetromino tetromino;
     private int x, y;
 
     private int[][] board;
+
 
     public Block(int x, int y, int[][] board) {
         this.x = x;
@@ -33,7 +43,7 @@ public class Block {
         this.board = board;
 
         tetromino = tetrominos[nextTetrominoIndex];
-        nextTetrominoIndex = ++nextTetrominoIndex % tetrominos.length;
+        nextTetrominoIndex = random.nextInt(tetrominos.length);
 
         place(x, y, tetromino.getId());
     }

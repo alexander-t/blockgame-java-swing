@@ -3,13 +3,10 @@ package se.tarlinder.tetris;
 // A block's x and y are counted from the top left corner.
 public class Block {
 
-    private static final Tetromino Z = new Z();
-    private static final Tetromino O = new O();
-
-    private static int nextBlockIndex = 0;
+    private static final Tetromino[] tetrominos = new Tetromino[]{new O(), new Z(), new S()};
+    private static int nextTetrominoIndex = 0;
 
     private Tetromino tetromino;
-
     private int x, y;
 
     private int[][] board;
@@ -19,8 +16,8 @@ public class Block {
         this.y = y;
         this.board = board;
 
-        tetromino = nextBlockIndex == 0 ? O : Z;
-        nextBlockIndex = ++nextBlockIndex % 2;
+        tetromino = tetrominos[nextTetrominoIndex];
+        nextTetrominoIndex = ++nextTetrominoIndex % tetrominos.length;
 
         place(x, y, tetromino.getId());
     }

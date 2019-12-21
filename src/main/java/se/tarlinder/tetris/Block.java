@@ -2,7 +2,8 @@ package se.tarlinder.tetris;
 
 // A block's x and y are counted from the top left corner.
 public class Block {
-    private static final int[][] shape = new int[][]{{1, 1}, {1, 1}};
+//    private static final int[][] shape = new int[][]{{1, 1}, {1, 1}};
+    private static final int[][] shape = new int[][]{{1, 1, 0}, {0, 1, 1}};
     private int x, y;
     private int width, height;
 
@@ -20,9 +21,11 @@ public class Block {
     }
 
     private void place(int boardX, int boardY, int value) {
-        for (int y = 0; y < shape.length; y++) {
-            for (int x = 0; x < shape[0].length; x++) {
-                board[boardY + y][boardX + x] = value;
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                if (shape[y][x] > 0) {
+                    board[boardY + y][boardX + x] = value;
+                }
             }
         }
     }

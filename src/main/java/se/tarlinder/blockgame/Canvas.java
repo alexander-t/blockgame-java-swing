@@ -1,13 +1,27 @@
-package se.tarlinder.tetris;
+package se.tarlinder.blockgame;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Map;
 
 public class Canvas extends JPanel {
 
     private static final Color BACKGROUND = new Color(245, 235, 255);
     private static final Color DARK_GREEN = new Color(0, 150, 0);
     private static final Color DARK_YELLOW = new Color(200, 200, 0);
+    private static final Color DARK_ORANGE = new Color(200, 100, 0);
+    private static final Color DARK_RED = new Color(200, 0, 0);
+    private static final Color DARK_CYAN = new Color(0, 150, 150);
+
+    private static final Map<Integer, Color> BLOCK_COLORS = Map.of(
+            10, DARK_YELLOW,
+            11, DARK_RED,
+            12, DARK_GREEN,
+            13, Color.blue,
+            14, DARK_ORANGE,
+            15, Color.magenta,
+            16, DARK_CYAN
+    );
 
     private final int squareSize;
     private final int columns, rows;
@@ -23,45 +37,34 @@ public class Canvas extends JPanel {
 
     @Override
     protected void paintComponent(Graphics g) {
+        Color drawColor;
         for (int y = 0; y < rows; y++) {
             for (int x = 0; x < columns; x++) {
                 boolean drawingBlock = false;
-                if (board[y][x] == 2) {
-                    g.setColor(Color.black);
-                } else if (board[y][x] == 10) {
-                    g.setColor(DARK_YELLOW);
+                drawColor = BLOCK_COLORS.get(board[y][x]);
+                if (drawColor != null) {
                     drawingBlock = true;
-                } else if (board[y][x] == 11) {
-                    g.setColor(new Color(200, 0, 0));
-                    drawingBlock = true;
-                } else if (board[y][x] == 12) {
-                    g.setColor(DARK_GREEN);
-                    drawingBlock = true;
-                } else if (board[y][x] == 13) {
-                    g.setColor(Color.blue);
-                    drawingBlock = true;
-                } else if (board[y][x] == 14) {
-                    g.setColor(new Color(200, 100, 0));
-                    drawingBlock = true;
-                } else if (board[y][x] == 15) {
-                    g.setColor(Color.magenta);
-                    drawingBlock = true;
-                } else if (board[y][x] == 16) {
-                    g.setColor(new Color(0, 150, 150));
-                    drawingBlock = true;
+                } else if (board[y][x] == 2) {
+                    drawColor = Color.black;
                 } else {
-                    g.setColor(BACKGROUND);
+                    drawColor = BACKGROUND;
                 }
+
+                g.setColor(drawColor);
                 g.fillRect(x * squareSize, y * squareSize, squareSize, squareSize);
 
                 if (drawingBlock) {
-                    Color c = g.getColor();
-                    for (int i = 0; i < 20; i++) {
-                        g.setColor(c);
+                    for (int i = 0; i < squareSize / 2; i++) {
+                        g.setColor(drawColor);
                         g.drawRect(x * squareSize + i, y * squareSize + i, squareSize - 1 - 2 * i, squareSize - 1 - 2 * i);
-                        c = new Color(Math.min(c.getRed() + 8, 255), Math.min(c.getGreen() + 8, 255), Math.min(c.getBlue() + 8, 255));
+                        drawColor = new Color(
+                                Math.min(drawColor.getRed() + 8, 255),
+                                Math.min(drawColor.getGreen() + 8, 255),
+                                Math.min(drawColor.getBlue() + 8, 255)
+                        );
                     }
 
+                    // Border and soft corners
                     g.setColor(BACKGROUND);
                     g.drawRect(x * squareSize, y * squareSize, squareSize - 1, squareSize - 1);
                     g.drawRect(x * squareSize + 1, y * squareSize + 1, 1, 1);

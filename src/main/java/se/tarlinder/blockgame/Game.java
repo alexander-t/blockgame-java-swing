@@ -7,11 +7,13 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.File;
 import java.util.Arrays;
 
 public class Game extends JFrame {
 
     public static final int EDGE_BLOCK = 2;
+    public static final Font FONT = loadFont();
 
     private Canvas canvas;
     private ScorePanel scorePanel;
@@ -41,14 +43,16 @@ public class Game extends JFrame {
         addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-                    tick();
-                } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-                    moveBlockRight();
-                } else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-                    moveBlockLeft();
-                } else if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-                    rotateBlock();
+                if (!lost) {
+                    if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+                        tick();
+                    } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+                        moveBlockRight();
+                    } else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+                        moveBlockLeft();
+                    } else if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+                        rotateBlock();
+                    }
                 }
             }
         });
@@ -60,6 +64,8 @@ public class Game extends JFrame {
         setResizable(false);
         setUndecorated(true);
         pack();
+        // Non-obvious way of centering the window
+        setLocationRelativeTo(null);
         setVisible(true);
     }
 
@@ -147,6 +153,21 @@ public class Game extends JFrame {
         return board[0].length / 2 - 1;
     }
 
+    @Override
+    public void paint(Graphics g) {
+        if (lost) {
+            g.setColor(Color.black);
+            g.fillRoundRect(50, 400, getWidth() - 100, 100, 20, 20);
+
+            g.setFont(FONT);
+            int textWidth = g.getFontMetrics().stringWidth("Game Over!");
+            g.setColor(Color.white);
+            g.drawString("Game Over!", getWidth() / 2 - textWidth / 2, 465);
+        } else {
+            super.paint(g);
+        }
+    }
+
     public String toString() {
         String b = "";
         for (int y = 0; y < board.length; y++) {
@@ -169,6 +190,19 @@ public class Game extends JFrame {
         return b;
     }
 
+    private static Font loadFont() {
+        try {
+            Font font = Font.createFont(Font.TRUETYPE_FONT,
+                    new File(Game.class.getClassLoader().getResource("Firstborn-Yzz78.ttf").getFile()))
+                    .deriveFont(96f);
+            GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(font);
+            return font;
+        } catch (Exception e) {
+            throw new IllegalStateException("Failed to load font", e);
+        }
+    }
+
+
     public static void main(String[] args) {
         Game game = new Game(10, 24);
         game.addBlock();
@@ -178,6 +212,8 @@ public class Game extends JFrame {
                     game.tick();
                     Thread.sleep(1000 - Math.max(50, game.level * 50));
                 }
+                game.repaint();
+                Thread.sleep(2000);
                 System.exit(0);
             } catch (InterruptedException e) {
 

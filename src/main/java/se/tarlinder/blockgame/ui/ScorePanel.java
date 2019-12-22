@@ -1,8 +1,9 @@
 package se.tarlinder.blockgame.ui;
 
+import se.tarlinder.blockgame.Game;
+
 import javax.swing.*;
 import java.awt.*;
-import java.io.File;
 
 public class ScorePanel extends JPanel {
 
@@ -15,7 +16,7 @@ public class ScorePanel extends JPanel {
     public ScorePanel(Dimension dimension) {
         setPreferredSize(dimension);
         centerX = dimension.width / 2;
-        valueFont = loadFont();
+        valueFont = Game.FONT;
         labelFont = valueFont.deriveFont(24f);
     }
 
@@ -51,18 +52,5 @@ public class ScorePanel extends JPanel {
         g.setFont(valueFont);
         g.setColor(Color.green);
         g.drawString(value, centerX - textWidth / 2, y + 70);
-    }
-
-
-    private Font loadFont() {
-        try {
-            Font font = Font.createFont(Font.TRUETYPE_FONT,
-                    new File(getClass().getClassLoader().getResource("Firstborn-Yzz78.ttf").getFile()))
-                    .deriveFont(96f);
-            GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(font);
-            return font;
-        } catch (Exception e) {
-            throw new IllegalStateException("Failed to load font", e);
-        }
     }
 }

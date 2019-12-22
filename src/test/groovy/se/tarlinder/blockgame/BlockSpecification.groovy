@@ -1,4 +1,4 @@
-package se.tarlinder.tetris
+package se.tarlinder.blockgame
 
 import spock.lang.Specification
 

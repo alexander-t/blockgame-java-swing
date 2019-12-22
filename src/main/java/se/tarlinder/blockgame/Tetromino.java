@@ -1,8 +1,9 @@
-package se.tarlinder.tetris;
+package se.tarlinder.blockgame;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+
+import static java.util.Arrays.stream;
 
 public class Tetromino {
 
@@ -12,7 +13,7 @@ public class Tetromino {
 
     public Tetromino(int id, int[][]... rotations) {
         this.id = id;
-        Arrays.stream(rotations).forEach(r -> shape.add(r));
+        stream(rotations).forEach(r -> shape.add(r));
     }
 
     public int[][] matrix() {

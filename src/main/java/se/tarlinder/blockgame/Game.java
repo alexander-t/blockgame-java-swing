@@ -1,4 +1,4 @@
-package se.tarlinder.tetris;
+package se.tarlinder.blockgame;
 
 import javax.swing.*;
 import java.awt.event.KeyAdapter;

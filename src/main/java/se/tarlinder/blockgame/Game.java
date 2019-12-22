@@ -1,12 +1,21 @@
 package se.tarlinder.blockgame;
 
+import se.tarlinder.blockgame.ui.Canvas;
+import se.tarlinder.blockgame.ui.ScorePanel;
+
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.Arrays;
 
 public class Game extends JFrame {
     private Canvas canvas;
+    private ScorePanel scorePanel;
+
+    private int totalRowsCollapsed;
+    private int level = 0;
+
     int[][] board;
     private boolean lost = false;
     private Block block;
@@ -24,6 +33,7 @@ public class Game extends JFrame {
         }
 
         canvas = new Canvas(40, board);
+        scorePanel = new ScorePanel(canvas.getPreferredSize());
 
         addKeyListener(new KeyAdapter() {
             @Override
@@ -41,7 +51,9 @@ public class Game extends JFrame {
         });
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        getContentPane().add(canvas);
+        getContentPane().setLayout(new BorderLayout());
+        getContentPane().add("West", canvas);
+        getContentPane().add("East", scorePanel);
         pack();
         setVisible(true);
     }
@@ -53,6 +65,7 @@ public class Game extends JFrame {
 
     private void checkFullRow() {
         int y = board.length - 2;
+        int rowsCollapsed = 0;
         do {
             boolean rowFull = true;
             for (int x = 1; x < board[0].length - 1; x++) {
@@ -65,10 +78,15 @@ public class Game extends JFrame {
             if (rowFull) {
                 collapse(y);
                 board[0][0] = board[0][board[0].length - 1] = 2; // Reset edges
+                rowsCollapsed++;
             } else {
                 y--;
             }
         } while (y > 0);
+
+        if (rowsCollapsed > 0) {
+            updateState(rowsCollapsed);
+        }
     }
 
     public void collapse(int row) {
@@ -88,14 +106,14 @@ public class Game extends JFrame {
         canvas.repaint();
     }
 
-    public void moveBlockLeft() {
+    private void moveBlockLeft() {
         if (block.canMoveLeft()) {
             block.moveLeft();
             canvas.repaint();
         }
     }
 
-    public void moveBlockRight() {
+    private void moveBlockRight() {
         if (block.canMoveRight()) {
             block.moveRight();
             canvas.repaint();
@@ -109,6 +127,20 @@ public class Game extends JFrame {
         }
     }
 
+    private void updateState(int rowsCollapsed) {
+        totalRowsCollapsed += rowsCollapsed;
+
+        if (totalRowsCollapsed % 10 == 0) {
+            level++;
+        }
+
+        scorePanel.updateRowsCollapsed(totalRowsCollapsed);
+        scorePanel.repaint();
+    }
+
+    private int getCenterX() {
+        return board[0].length / 2 - 1;
+    }
 
     public String toString() {
         String b = "";
@@ -133,22 +165,18 @@ public class Game extends JFrame {
     }
 
     public static void main(String[] args) {
-        Game g = new Game(10, 24);
-        g.addBlock();
+        Game game = new Game(10, 24);
+        game.addBlock();
         new Thread(() -> {
             try {
-                while (!g.lost) {
-                    g.tick();
-                    Thread.sleep(250);
+                while (!game.lost) {
+                    game.tick();
+                    Thread.sleep(1000 - Math.max(50, game.level * 50));
                 }
                 System.exit(0);
             } catch (InterruptedException e) {
 
             }
         }).start();
-    }
-
-    private int getCenterX() {
-        return board[0].length / 2 - 1;
     }
 }

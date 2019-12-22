@@ -1,4 +1,4 @@
-package se.tarlinder.blockgame;
+package se.tarlinder.blockgame.ui;
 
 import javax.swing.*;
 import java.awt.*;

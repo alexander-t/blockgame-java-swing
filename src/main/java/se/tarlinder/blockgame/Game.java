@@ -136,7 +136,7 @@ public class Game extends JFrame {
         totalRowsCollapsed += rowsCollapsed;
 
         if (totalRowsCollapsed % 10 == 0) {
-            level++;
+            scorePanel.updateLevel(++level);
         }
 
         scorePanel.updateRowsCollapsed(totalRowsCollapsed);

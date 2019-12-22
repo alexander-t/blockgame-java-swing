@@ -10,6 +10,9 @@ import java.awt.event.KeyEvent;
 import java.util.Arrays;
 
 public class Game extends JFrame {
+
+    public static final int EDGE_BLOCK = 2;
+
     private Canvas canvas;
     private ScorePanel scorePanel;
 
@@ -25,9 +28,9 @@ public class Game extends JFrame {
         for (int y = 0; y < board.length; y++) {
             for (int x = 0; x < board[0].length; x++) {
                 if (y < board.length - 1) {
-                    board[y][0] = board[y][board[0].length - 1] = 2;
+                    board[y][0] = board[y][board[0].length - 1] = EDGE_BLOCK;
                 } else {
-                    board[y][x] = 2;
+                    board[y][x] = EDGE_BLOCK;
                 }
             }
         }
@@ -54,6 +57,8 @@ public class Game extends JFrame {
         getContentPane().setLayout(new BorderLayout());
         getContentPane().add("West", canvas);
         getContentPane().add("East", scorePanel);
+        setResizable(false);
+        setUndecorated(true);
         pack();
         setVisible(true);
     }

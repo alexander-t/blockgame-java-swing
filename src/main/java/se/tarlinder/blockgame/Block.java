@@ -2,7 +2,9 @@ package se.tarlinder.blockgame;
 
 import java.util.Random;
 
-// A block's x and y are counted from the top left corner.
+/**
+ * The basic game block, which is a tetromino with a specific rotation, placed on a game board.
+ */
 public class Block {
 
     // The tetrominos use the SRS rotation system. See https://strategywiki.org/wiki/Tetris/Rotation_systems
@@ -50,10 +52,10 @@ public class Block {
     private static int nextTetrominoIndex = random.nextInt(tetrominos.length);
 
     private Tetromino tetromino;
+    //A block's x and y are counted from the top left corner.
     private int x, y;
 
     private int[][] board;
-
 
     public Block(int centerX, int y, int[][] board) {
         tetromino = tetrominos[nextTetrominoIndex];

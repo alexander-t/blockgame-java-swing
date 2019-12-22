@@ -1,5 +1,7 @@
 package se.tarlinder.blockgame.ui;
 
+import se.tarlinder.blockgame.Game;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.Map;
@@ -44,7 +46,7 @@ public class Canvas extends JPanel {
                 drawColor = BLOCK_COLORS.get(board[y][x]);
                 if (drawColor != null) {
                     drawingBlock = true;
-                } else if (board[y][x] == 2) {
+                } else if (board[y][x] == Game.EDGE_BLOCK) {
                     drawColor = Color.black;
                 } else {
                     drawColor = BACKGROUND;

@@ -5,6 +5,9 @@ import java.util.List;
 
 import static java.util.Arrays.stream;
 
+/**
+ * Describes a tetromino and its matrix.
+ */
 public class Tetromino {
 
     private final int id;

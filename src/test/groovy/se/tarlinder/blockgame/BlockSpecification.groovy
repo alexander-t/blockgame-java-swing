@@ -6,7 +6,7 @@ class BlockSpecification extends Specification {
     def "Block can be dropped if nothing is under it"() {
         given:
         int[][] board = [[0, 0], [0, 0], [0, 0]]
-        def block = new Block(0, 0, board)
+        def block = new Block(0, 0, board, Block.O)
         expect:
         block.canDrop()
     }
@@ -14,7 +14,7 @@ class BlockSpecification extends Specification {
     def "Block can't be dropped if there's something under it"() {
         given:
         int[][] board = [[0, 0], [0, 0], [2, 2]]
-        def block = new Block(0, 0, board)
+        def block = new Block(0, 0, board, Block.O)
         expect:
         !block.canDrop()
     }
@@ -22,15 +22,15 @@ class BlockSpecification extends Specification {
     def "Placing two Zs next to each other"() {
         given:
         int[][] board = [[0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [2, 2, 2, 2, 2]]
+        int[][] expectedBoard = [
+                [0, 12, 12, 12, 12],
+                [12, 12, 12, 12, 0],
+                [2, 2, 2, 2, 2]]
         when:
-        new Block(0, 0, board)
-        new Block(2, 0, board)
+        new Block(2, 0, board, Block.S)
+        new Block(0, 0, board, Block.S)
         then:
-        board == [
-                [1, 1, 1, 1, 0],
-                [0, 1, 1, 1, 1],
-                [2, 2, 2, 2, 2]
-        ]
+        board == expectedBoard
     }
 
 }
